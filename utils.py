@@ -48,9 +48,9 @@ def getSampleDict(y, overSampleRate=0.5):
     return sampleDict
 
 
-def getClassWeight(y, maj):
+def getClassWeight(y, maj, ratio=2):
     labelDict = Counter(y)
-    classWeight = {key: 2 for key in labelDict.keys() if key != maj}
+    classWeight = {key: ratio for key in labelDict.keys() if key != maj}
     classWeight[maj] = 1
     return classWeight
 
@@ -70,7 +70,7 @@ def getResamplePipeline(sampleDict, k_neighbors=3, withUnder=True):
 def crossValidate(model, X, y, n_splits=3, n_repeats=3):
     cv = RepeatedStratifiedKFold(
         n_splits=n_splits, n_repeats=n_repeats, random_state=1)
-    scores = cross_val_score(model, X, y, cv=cv, n_jobs=-1)
+    scores = cross_val_score(model, X, y, cv=cv, n_jobs=-1, scoring='f1_macro')
     return mean(scores)
 
 
