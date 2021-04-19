@@ -67,10 +67,10 @@ def getResamplePipeline(sampleDict, k_neighbors=3, withUnder=True):
     return pipeline
 
 
-def crossValidate(model, X, y, n_splits=3, n_repeats=3):
+def crossValidate(model, X, y, n_splits=3, n_repeats=3, scoring='f1_macro'):
     cv = RepeatedStratifiedKFold(
         n_splits=n_splits, n_repeats=n_repeats, random_state=1)
-    scores = cross_val_score(model, X, y, cv=cv, n_jobs=-1, scoring='f1_macro')
+    scores = cross_val_score(model, X, y, cv=cv, n_jobs=-1, scoring=scoring)
     return mean(scores)
 
 
@@ -93,9 +93,9 @@ def randomForestFeatureImportancePlot(X, y, feature_names, model, isPipeline=Fal
     plt.show()
 
 
-def permuationFeatureImportancePlot(model, X, y, feature_names, n_repeats=10, plot=True):
+def permuationFeatureImportancePlot(model, X, y, feature_names, n_repeats=10, plot=True, scoring="f1_macro"):
     result = permutation_importance(
-        model, X, y, n_repeats=n_repeats, random_state=42, n_jobs=2)
+        model, X, y, n_repeats=n_repeats, random_state=42, n_jobs=2, scoring=scoring)
     sorted_idx = result.importances_mean.argsort()
 
     fig, ax = plt.subplots()
